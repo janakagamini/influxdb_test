@@ -15,7 +15,7 @@ INFLUX_DB_NAME = 'ecg_stream_test'
 BATCH_AMOUNT = 2000
 
 # Simulate a unique stream_id per source
-STREAM_ID = socket.gethostname()
+STREAM_ID = ''.join(e for e in socket.gethostname() if e.isalnum())
 
 # Pick from the data directory
 FILE_NAME = 'mgh001.csv'
