@@ -1,5 +1,6 @@
 import csv
 import time
+import socket
 
 # Must install from pip
 import nanotime
@@ -13,8 +14,8 @@ INFLUX_DB_NAME = 'stream'
 # How many points to batch for each post
 BATCH_AMOUNT = 2000
 
-# Simulate stream id, change for each parallel process you run
-STREAM_ID = '01'
+# Simulate a unique stream_id per source
+STREAM_ID = socket.gethostname()
 
 # Pick from the data directory
 FILE_NAME = 'mgh001.csv'
@@ -25,7 +26,7 @@ t = nanotime.now().milliseconds()
 
 def bg_cb(sess, resp):
     # Print response and round-trip time for POST operation
-    print("Response: " + str(resp.status_code) + ", Delta: " + str(nanotime.now().milliseconds() - t))
+    print("ID: " + STREAM_ID + ", Response: " + str(resp.status_code) + ", Delta: " + str(nanotime.now().milliseconds() - t))
 
 with open('../data/' + FILE_NAME, 'rt') as f:
     reader = csv.reader(f)
@@ -39,7 +40,13 @@ with open('../data/' + FILE_NAME, 'rt') as f:
         lead2 = row[2]
 
         # Buffer lines for influxdb
-        s += 'ecg,stream_id=' + STREAM_ID + ' lead1=' + str(lead1) + ",lead2=" + str(lead2) + " " + str(nanotime.now().nanoseconds()) + "\n"
+        # E.g: ecg,stream_id=ba0be0483c18 lead1=-0.576,lead2=0.012 1452486486726298112
+
+        # Writing directly in nanoseconds
+        #s += 'ecg,stream_id=' + STREAM_ID + ' lead1=' + str(lead1) + ",lead2=" + str(lead2) + " " + str(nanotime.now().nanoseconds()) + "\n"
+
+        # Milliseconds converted to nanoseconds
+        s += 'ecg,stream_id=' + STREAM_ID + ' lead1=' + str(lead1) + ",lead2=" + str(lead2) + " " + str(int(nanotime.now().milliseconds() * 1000000)) + "\n"
 
         # Simulate delay for each measurement
         time.sleep(0.003)
