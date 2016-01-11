@@ -9,7 +9,7 @@ from requests_futures.sessions import FuturesSession
 # InfluxDB server details
 INFLUX_URL = 'http://localhost'
 INFLUX_PORT = '8086'
-INFLUX_DB_NAME = 'stream'
+INFLUX_DB_NAME = 'ecg_stream_test'
 
 # How many points to batch for each post
 BATCH_AMOUNT = 2000
