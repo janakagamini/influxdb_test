@@ -52,7 +52,7 @@ with open('../data/' + FILE_NAME, 'rt') as f:
         # Milliseconds converted to nanoseconds
         s += 'ecg,stream_id=' + STREAM_ID + ' lead1=' + str(lead1) + ",lead2=" + str(lead2) + " " + str(int(nanotime.now().milliseconds() * 1000000)) + "\n"
 
-        # Simulate delay for each measurement
+        # Sampling rate as per csv file
         time.sleep(0.003)
 
         # POST to influxdb when batch threshold is reached
