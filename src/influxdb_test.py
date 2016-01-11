@@ -11,19 +11,19 @@ INFLUX_URL = 'http://172.16.132.86'
 INFLUX_PORT = '8086'
 INFLUX_DB_NAME = 'ecg_stream_test'
 
-# How many points to batch for each post
+# How many points to batch for each POST
 BATCH_AMOUNT = 2000
 
-# Simulate a unique stream_id per source
+# Simulate a unique stream_id (socket.gethostname() returns your computer name)
 STREAM_ID = ''.join(e for e in socket.gethostname() if e.isalnum())
 
-# Pick from the data directory
+# Pick a file from the data directory
 FILE_NAME = 'mgh001.csv'
 
 session = FuturesSession()
 t = nanotime.now().milliseconds()
 
-
+# Called when POST completes
 def bg_cb(sess, resp):
     # Print response and round-trip time for POST operation
     print("ID: " + STREAM_ID + ", Response: " + str(resp.status_code) + ", Delta: " + str(nanotime.now().milliseconds() - t))
@@ -31,7 +31,7 @@ def bg_cb(sess, resp):
 with open('../data/' + FILE_NAME, 'rt') as f:
     reader = csv.reader(f)
     count = 0
-    s = ""
+    s = ''
     for row in reader:
         count += 1
 
@@ -40,7 +40,11 @@ with open('../data/' + FILE_NAME, 'rt') as f:
         lead2 = row[2]
 
         # Buffer lines for influxdb
-        # E.g: ecg,stream_id=ba0be0483c18 lead1=-0.576,lead2=0.012 1452486486726298112
+        # E.g: ecg,stream_id=janakaOptiPlex9020 lead1=-0.576,lead2=0.012 1452486486726298112
+        #
+        # Measurement: ecg
+        # Tags: stream_id
+        # Values: lead1, lead2
 
         # Writing directly in nanoseconds
         #s += 'ecg,stream_id=' + STREAM_ID + ' lead1=' + str(lead1) + ",lead2=" + str(lead2) + " " + str(nanotime.now().nanoseconds()) + "\n"
