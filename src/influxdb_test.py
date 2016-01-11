@@ -44,10 +44,13 @@ with open('../data/' + FILE_NAME, 'rt') as f:
         # Simulate delay for each measurement
         time.sleep(0.003)
 
-        # Post to influxdb when batch threshold is reached
+        # POST to influxdb when batch threshold is reached
         if count > BATCH_AMOUNT:
 
             t = nanotime.now().milliseconds()
+
+            # POST operation is async so it wont delay the timestamping
             future = session.post(INFLUX_URL + ':' + INFLUX_PORT + '/write?db=' + INFLUX_DB_NAME, data=s, background_callback=bg_cb)
+
             s = ''
             count = 0
