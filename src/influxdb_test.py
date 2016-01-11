@@ -7,7 +7,7 @@ import nanotime
 from requests_futures.sessions import FuturesSession
 
 # InfluxDB server details
-INFLUX_URL = 'http://localhost'
+INFLUX_URL = 'http://172.16.132.86'
 INFLUX_PORT = '8086'
 INFLUX_DB_NAME = 'ecg_stream_test'
 
